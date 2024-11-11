@@ -1,0 +1,9 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+      <AssemblyName>MarcelN.StaticFileServer.Web</AssemblyName>
+      <RootNamespace>MarcelN.StaticFileServer.Web</RootNamespace>
+      <PublishAot>true</PublishAot>
+  </PropertyGroup>
+
+</Project>
