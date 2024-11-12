@@ -7,7 +7,11 @@ var builder = WebApplication.CreateEmptyBuilder(new() { Args = args });
 
 // Configure host
 builder.WebHost.UseKestrelCore();
-builder.WebHost.ConfigureKestrel(options => options.AddServerHeader = false);
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(5000);
+    options.AddServerHeader = false;
+});
 
 // Configure configuration
 builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>

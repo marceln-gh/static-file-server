@@ -27,7 +27,6 @@ RUN dotnet publish -c Release -o /app/publish /p:DebugType=None /p:DebugSymbols=
 
 # Create final (runtime) image
 FROM alpine:3.19
-#FROM mcr.microsoft.com/dotnet/runtime-deps:8.0
 
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 
