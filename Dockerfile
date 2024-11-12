@@ -17,10 +17,16 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 RUN apk add clang binutils musl-dev build-base zlib-static
 
 WORKDIR /
-COPY . .
+COPY *.sln .
+COPY src/*.Build.props ./src/
+COPY src/Web/*.csproj ./src/Web/
 
+RUN dotnet restore -r linux-musl-x64
+
+# Copy everything else and publish
+COPY . .
 WORKDIR /src/Web
-RUN dotnet publish -c Release -o /app/publish /p:DebugType=None /p:DebugSymbols=false
+RUN dotnet publish -c Release --no-restore -r linux-musl-x64 -o /app/publish /p:DebugType=None /p:DebugSymbols=false
 
 RUN adduser --system --no-create-home --uid 1000 --shell /usr/sbin/nologin static
 
