@@ -5,12 +5,13 @@
       "commandName": "Project",
       "dotnetRunMessages": true,
       "launchBrowser": true,
-      "applicationUrl": "http://localhost:5200",
+      "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
         "SFS_ALLOW_INDEX": "true",
         "SFS_SHOW_LISTING": "false",
-        "SFS_FALLBACK_TO_INDEX": "true"
+        "SFS_FALLBACK_TO_INDEX": "true",
+        "SFS_DEBUG": "false"
       }
     }
   }

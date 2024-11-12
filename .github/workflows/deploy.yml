@@ -1,0 +1,39 @@
+name: deploy
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 1
+
+    - name: Determine version
+      id: version
+      shell: pwsh
+      run: |
+        "VERSION_TAG=$(get-date -format yyyyMMddHHmmss)" >> $env:GITHUB_OUTPUT
+    - name: Output version
+      env:
+        VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
+      shell: pwsh
+      run: echo $env:VERSION_TAG
+
+    - name: Build the Docker image
+      env:
+        VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
+      shell: pwsh
+      run: docker build -t ${{ vars.REPO_URL }}/marceln/static-file-server -t "${{ vars.REPO_URL }}/marceln/static-file-server:$env:VERSION_TAG" -t localhost:5001/marceln/static-file-server -t "localhost:5001/marceln/static-file-server:$env:VERSION_TAG" .
+    - name: Login to Docker repository
+      uses: docker/login-action@v3
+      with:
+        registry: ${{ vars.REPO_URL }}
+        username: ${{ secrets.REPO_USERNAME }}
+        password: ${{ secrets.REPO_PASSWORD }}
+    - name: Push image to Docker repository
+      shell: pwsh
+      run: docker push ${{ vars.REPO_URL }}/marceln/static-file-server -a
