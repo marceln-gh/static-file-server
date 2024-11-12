@@ -8,16 +8,13 @@
 # docker push repo.marceln.nl/marceln/time-tracker -a
 
 # RUN WITH:
-# docker run --rm -it -p 5000:8080 -e SFS_ALLOW_INDEX=true -e SFS_SHOW_LISTING=true -e SFS_FALLBACK_TO_INDEX=false repo.marceln.nl/marceln/static-file-server
+# docker run --rm -it -p 5000:8080 -e SFS_ALLOW_INDEX=true -e SFS_SHOW_LISTING=true -e SFS_FALLBACK_TO_INDEX=false SFS_DEBUG=false repo.marceln.nl/marceln/static-file-server
 
 # Copy csproj and restore as distinct layers
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine3.19 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
 
 # Install NativeAOT build prerequisites
-RUN apk add --no-cache \
-    clang \
-    build-base \
-    zlib-dev
+RUN apk add clang binutils musl-dev build-base zlib-static
 
 WORKDIR /
 COPY . .
@@ -25,17 +22,17 @@ COPY . .
 WORKDIR /src/Web
 RUN dotnet publish -c Release -o /app/publish /p:DebugType=None /p:DebugSymbols=false
 
-# Create final (runtime) image
-FROM alpine:3.19
+RUN adduser --system --no-create-home --uid 1000 --shell /usr/sbin/nologin static
 
-ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
+# Create final (runtime) image
+FROM scratch
 
 EXPOSE 5000
 VOLUME /wwwroot
+COPY --from=build /etc/passwd /etc/passwd
 COPY --from=build /app/publish/sfs /sfs
 COPY --from=build /app/publish/wwwroot/index.html /wwwroot/index.html
 
-RUN ls | grep "sfs"
-
+USER static
 ENTRYPOINT ["/sfs"]
 CMD []

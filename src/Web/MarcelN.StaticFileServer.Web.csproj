@@ -3,7 +3,13 @@
   <PropertyGroup>
       <AssemblyName>sfs</AssemblyName>
       <RootNamespace>MarcelN.StaticFileServer.Web</RootNamespace>
+
       <PublishAot>true</PublishAot>
+      <StaticallyLinked>true</StaticallyLinked>
+      <StaticExecutable>true</StaticExecutable>
+
+      <InvariantGlobalization>true</InvariantGlobalization>
+      <StripSymbols>true</StripSymbols>
   </PropertyGroup>
 
 </Project>
