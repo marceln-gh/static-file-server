@@ -8,6 +8,7 @@ var builder = WebApplication.CreateEmptyBuilder(new() { Args = args });
 builder.WebHost.UseKestrelCore();
 builder.WebHost.ConfigureKestrel(options =>
 {
+    // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints?view=aspnetcore-8.0
     options.ListenAnyIP(5000);
     options.AddServerHeader = false;
 });
