@@ -3,7 +3,6 @@ using MarcelN.StaticFileServer.Web;
 using Microsoft.AspNetCore.HttpLogging;
 
 var builder = WebApplication.CreateEmptyBuilder(new() { Args = args });
-//var builder = WebApplication.CreateSlimBuilder(args);
 
 // Configure host
 builder.WebHost.UseKestrelCore();
