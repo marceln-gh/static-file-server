@@ -23,12 +23,12 @@ COPY *.sln .
 COPY src/*.Build.props ./src/
 COPY src/Web/*.csproj ./src/Web/
 
-RUN dotnet restore -a $TARGETARCH
+RUN dotnet restore -a ${TARGETARCH}
 
 # Copy everything else and publish
 COPY . .
 WORKDIR /src/Web
-RUN dotnet publish -c Release --no-restore -a $TARGETARG -o /app/publish /p:DebugType=None /p:DebugSymbols=false
+RUN dotnet publish -c Release --no-restore -a ${TARGETARG} -o /app/publish /p:DebugType=None /p:DebugSymbols=false
 
 RUN adduser --system --no-create-home --uid 1000 --shell /usr/sbin/nologin static
 
