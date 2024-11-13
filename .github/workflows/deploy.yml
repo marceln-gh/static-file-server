@@ -20,11 +20,12 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build & publish
-        uses: ./docker-publish.yml
+        uses: ./.github/workflows/docker-publish.yml
         with:
-          dockerFile: Dockerfile
-          imageName: ${{ vars.IMAGE_NAME }}
+          docker_file: Dockerfile
+          image_name: ${{ vars.IMAGE_NAME }}
           platforms: linux/arm64,linux/amd64
           version: ${{ steps.version.outputs.VERSION_TAG }}
-          DOCKER_USERNAME: ${{ secrets.REPO_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.REPO_PASSWORD }}
+        secrets:
+          docker_username: ${{ secrets.REPO_USERNAME }}
+          docker_password: ${{ secrets.REPO_PASSWORD }}
