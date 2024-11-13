@@ -68,7 +68,7 @@ jobs:
       # Pull previous image from docker hub to use it as cache to improve the image build time.
       - name: docker pull cache image
         continue-on-error: true
-        run: docker pull ${{ inputs.imageName }}:latest
+        run: docker pull ${{ inputs.image_name }}:latest
 
       # Setup QEMU
       - name: Set up QEMU
@@ -77,8 +77,8 @@ jobs:
       # Build and Publish to Docker
       - name: Build the Docker image
         run: |
-          docker buildx build ${{ inputs.context }} --file ${{ inputs.dockerFile }} \
-            --tag ${{ inputs.imageName }}:${{ steps.version.outputs.VERSION_TAG }} \
-            --tag ${{ inputs.imageName }}:latest \
-            --cache-from=${{ inputs.imageName }}:latest \
+          docker buildx build ${{ inputs.context }} --file ${{ inputs.docker_file }} \
+            --tag ${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }} \
+            --tag ${{ inputs.image_name }}:latest \
+            --cache-from=${{ inputs.image_name }}:latest \
             --push --platform=${{ inputs.platforms }}
