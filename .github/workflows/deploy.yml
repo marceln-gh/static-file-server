@@ -5,20 +5,6 @@ on:
     branches: [main]
 
 jobs:
-  dotnet_release_job:
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
-    steps:
-      # Determine version
-      - name: Determine version
-        id: version
-        run: |
-          "VERSION_TAG=$(get-date -format yyyyMMddHHmmss)" >> $env:GITHUB_OUTPUT
-
-      - uses: actions/checkout@v4
-
   build_and_publish:
     uses: ./.github/workflows/docker-publish.yml
     with:
