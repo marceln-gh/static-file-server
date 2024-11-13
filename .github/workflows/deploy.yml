@@ -17,6 +17,8 @@ jobs:
         run: |
           "VERSION_TAG=$(get-date -format yyyyMMddHHmmss)" >> $env:GITHUB_OUTPUT
 
+      - uses: actions/checkout@v4
+
       - name: Build & publish
         uses: ./docker-publish.yml
         with:
