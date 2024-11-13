@@ -11,7 +11,9 @@
 # docker run --rm -it -p 5000:8080 -e SFS_ALLOW_INDEX=true -e SFS_SHOW_LISTING=true -e SFS_FALLBACK_TO_INDEX=false SFS_DEBUG=false repo.marceln.nl/marceln/static-file-server
 
 # Copy csproj and restore as distinct layers
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+ARG TARGETARG
+ARG BUILDPLATFORM
 
 # Install NativeAOT build prerequisites
 RUN apk add clang binutils musl-dev build-base zlib-static
@@ -21,17 +23,19 @@ COPY *.sln .
 COPY src/*.Build.props ./src/
 COPY src/Web/*.csproj ./src/Web/
 
-RUN dotnet restore -r linux-musl-x64
+RUN dotnet restore -a $TARGETARCH
 
 # Copy everything else and publish
 COPY . .
 WORKDIR /src/Web
-RUN dotnet publish -c Release --no-restore -r linux-musl-x64 -o /app/publish /p:DebugType=None /p:DebugSymbols=false
+RUN dotnet publish -c Release --no-restore -a $TARGETARG -o /app/publish /p:DebugType=None /p:DebugSymbols=false
 
 RUN adduser --system --no-create-home --uid 1000 --shell /usr/sbin/nologin static
 
 # Create final (runtime) image
-FROM scratch
+FROM --platform=$BUILDPLATFORM scratch
+ARG TARGETARG
+ARG BUILDPLATFORM
 
 EXPOSE 5000
 VOLUME /wwwroot
