@@ -11,7 +11,6 @@ jobs:
         docker_file: Dockerfile
         image_name: ${{ vars.IMAGE_NAME }}
         platforms: linux/arm64,linux/amd64
-        version: ${{ steps.version.outputs.VERSION_TAG }}
     secrets:
         docker_username: ${{ secrets.REPO_USERNAME }}
         docker_password: ${{ secrets.REPO_PASSWORD }}
