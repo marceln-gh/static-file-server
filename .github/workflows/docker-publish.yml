@@ -78,7 +78,7 @@ jobs:
       - name: Build the Docker image
         run: |
           docker buildx build ${{ inputs.context }} --file ${{ inputs.docker_file }} \
-            --tag ${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }} \
-            --tag ${{ inputs.image_name }}:latest \
-            --cache-from=${{ inputs.image_name }}:latest \
+            --tag "${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }}" \
+            --tag "${{ inputs.image_name }}:latest" \
+            --cache-from="${{ inputs.image_name }}:latest" \
             --push --platform=${{ inputs.platforms }}
