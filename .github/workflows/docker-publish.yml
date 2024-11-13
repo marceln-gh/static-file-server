@@ -37,9 +37,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        shell: pwsh
 
     steps:
       - uses: actions/checkout@v4
@@ -47,14 +44,14 @@ jobs:
       # Determine version
       - name: Determine version
         id: version
+        shell: pwsh
         run: |
           "VERSION_TAG=$(get-date -format yyyyMMddHHmmss)" >> $env:GITHUB_OUTPUT
 
       - name: Output version
         env:
           VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
-        shell: pwsh
-        run: echo $env:VERSION_TAG
+        run: echo "$VERSION_TAG"
 
       # Setup Buildx
       - name: Docker Setup Buildx
@@ -86,7 +83,7 @@ jobs:
           VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
         run: |
           docker buildx build ${{ inputs.context }} --file ${{ inputs.docker_file }} \
-            --tag "${{ inputs.image_name }}:$env:VERSION_TAG" \
+            --tag "${{ inputs.image_name }}:$VERSION_TAG" \
             --tag "${{ inputs.image_name }}:latest" \
             --cache-from="${{ inputs.image_name }}:latest" \
             --push --platform=${{ inputs.platforms }}
