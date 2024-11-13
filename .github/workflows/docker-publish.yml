@@ -85,7 +85,5 @@ jobs:
           file: ${{ inputs.docker_file }}
           platforms: ${{ inputs.platforms }}
           push: true
-          tags:
-            ${{ inputs.image_name }}:latest
-            ${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }}
+          tags: ${{ inputs.image_name }}:latest,${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }}
           cache-from: ${{ inputs.image_name }}:latest
