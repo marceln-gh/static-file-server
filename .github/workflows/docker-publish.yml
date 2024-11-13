@@ -4,13 +4,13 @@ on:
   workflow_call:
     inputs:
       # The location of the Dockerfile parameter.
-      dockerFile:
+      docker_file:
         required: true
         type: string
         description: The location of the Dockerfile.
 
       # The name of the docker image parameter.
-      imageName:
+      image_name:
         required: true
         type: string
         description: The name of the docker image.
@@ -32,12 +32,11 @@ on:
         default: $(date +%s)
         type: string
         description: The version of the image with default value is current date-time.
-
-      # Docker repository credentials
-      DOCKER_USERNAME:
+    secrets:
+      docker_username:
         required: true
         description: The docker repository user name.
-      DOCKER_PASSWORD:
+      docker_password:
         required: true
         description: The docker repository password or personal access token.
 
