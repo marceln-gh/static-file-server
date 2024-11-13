@@ -78,12 +78,14 @@ jobs:
         uses: docker/setup-qemu-action@v3
 
       # Build and Publish to Docker
-      - name: Build the Docker image
-        env:
-          VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
-        run: |
-          docker buildx build ${{ inputs.context }} --file ${{ inputs.docker_file }} \
-            --tag "${{ inputs.image_name }}:$VERSION_TAG" \
-            --tag "${{ inputs.image_name }}:latest" \
-            --cache-from="${{ inputs.image_name }}:latest" \
-            --push --platform=${{ inputs.platforms }}
+      - name: Build and push
+        uses: docker/build-push-action@v6
+        with:
+          context: ${{ inputs.context }}
+          file: ${{ inputs.docker_file }}
+          platforms: ${{ inputs.platforms }}
+          push: true
+          tags:
+            ${{ inputs.image_name }}:latest
+            ${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }}
+          cache-from: ${{ inputs.image_name }}:latest
