@@ -1,0 +1,24 @@
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+      <AssemblyName>sfs</AssemblyName>
+      <RootNamespace>MarcelN.StaticFileServer.Web</RootNamespace>
+
+      <PublishAot>true</PublishAot>
+      <StaticallyLinked>true</StaticallyLinked>
+      <StaticExecutable>true</StaticExecutable>
+
+      <StripSymbols>true</StripSymbols>
+      <InvariantGlobalization>true</InvariantGlobalization>
+      <MetricsSupport>false</MetricsSupport>
+      <StackTraceSupport>false</StackTraceSupport>
+      <UseSystemResourceKeys>true</UseSystemResourceKeys>
+      <!--<DebuggerSupport>false</DebuggerSupport>-->
+      <!--<EnableUnsafeBinaryFormatterSerialization>false</EnableUnsafeBinaryFormatterSerialization>-->
+      <!--<EnableUnsafeUTF7Encoding>false</EnableUnsafeUTF7Encoding>-->
+      <!--<MetadataUpdaterSupport>false</MetadataUpdaterSupport>-->
+      <!--<UseNativeHttpHandler>true</UseNativeHttpHandler>-->
+      <!--<XmlResolverIsNetworkingEnabledByDefault>false</XmlResolverIsNetworkingEnabledByDefault>-->
+  </PropertyGroup>
+
+</Project>
