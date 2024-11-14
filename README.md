@@ -1,7 +1,7 @@
 # Static File Server
 
 <a href="https://github.com/sponsors/marceln-gh">
-    <img src=".github/assets/sponsor.svg" width="147" />
+    <img src=".github/assets/sponsor.svg" width="150" />
 </a>
 
 ## Introduction
