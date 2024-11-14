@@ -1,11 +1,15 @@
 # Static File Server
 
+<a href="https://github.com/sponsors/marceln-gh">
+    <img src=".github/assets/sponsor.svg" width="150" />
+</a>
+
 ## Introduction
 
 Static file server that uses environment variables for configuration.
 The file server is available as a container image here: https://hub.docker.com/r/marcelndev/static-file-server.
 
-###### 💡 Important
+###### ⚠️ Important
 
 The file server _in its current form_ is **not meant** to be used as an edge (internet-facing) web server.
 A reverse proxy should be used to support HTTPS for example. Some reverse proxies that can be used: _Apache_, _Caddy_, _IIS_, _Nginx_, _YARP_
@@ -46,10 +50,11 @@ docker run \
 
 ### Dockerfile
 
-This options creates a new container image that includes the contents that need to be server.
+This options creates a new image that includes the contents that need to be served.
 
 ```
-# Dockerfile
 FROM marcelndev/static-file-server:latest
-COPY dist /wwwroot
+COPY /some/folder/on/host /wwwroot
 ```
+
+When you want to run this custom image you can omit the volume mapping (`-v` argument).
