@@ -25,14 +25,14 @@ builder.Configuration.AddEnvironmentVariables(prefix: "ASPNETCORE_");
 builder.Configuration.AddEnvironmentVariables(prefix: "SFS_");
 if (args is { Length: > 0 })
 {
-    builder.Configuration.AddCommandLine(args);
+    _ = builder.Configuration.AddCommandLine(args);
 }
 
 // Register services
 builder.Services.AddLogging(logging =>
 {
-    logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
-    logging.AddSimpleConsole(o => o.IncludeScopes = true);
+    _ = logging.AddConfiguration(builder.Configuration.GetSection("Logging"));
+    _ = logging.AddSimpleConsole(o => o.IncludeScopes = true);
 });
 builder.Services.AddHttpLogging(logging =>
 {
@@ -50,12 +50,12 @@ var app = builder.Build();
 
 if (app.Configuration.GetValue("DEBUG", false))
 {
-    app.UseHttpLogging();
+    _ = app.UseHttpLogging();
 }
 
 if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
 {
-    app.UseMiddleware<FallbackToIndexMiddleware>();
+    _ = app.UseMiddleware<FallbackToIndexMiddleware>();
 }
 
 var fileServerOptions = new FileServerOptions
