@@ -1,6 +1,16 @@
+using System.Globalization;
+
 using MarcelN.StaticFileServer.Web;
 
 using Microsoft.AspNetCore.HttpLogging;
+
+static TValue GetEnvironmentVariableOrDefault<TValue>(string variableName, TValue defaultValue) where TValue : IParsable<TValue>
+{
+    var stringValue = Environment.GetEnvironmentVariable(variableName);
+    return TValue.TryParse(stringValue, CultureInfo.InvariantCulture, out var value) ? value : defaultValue;
+}
+
+var portNumber = GetEnvironmentVariableOrDefault("SFS_PORT", 80);
 
 var builder = WebApplication.CreateEmptyBuilder(new() { Args = args });
 
@@ -9,7 +19,7 @@ builder.WebHost.UseKestrelCore();
 builder.WebHost.ConfigureKestrel(options =>
 {
     // https://learn.microsoft.com/en-us/aspnet/core/fundamentals/servers/kestrel/endpoints?view=aspnetcore-8.0
-    options.ListenAnyIP(5000);
+    options.ListenAnyIP(portNumber);
     options.AddServerHeader = false;
 });
 
@@ -23,10 +33,6 @@ builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
 });
 builder.Configuration.AddEnvironmentVariables(prefix: "ASPNETCORE_");
 builder.Configuration.AddEnvironmentVariables(prefix: "SFS_");
-if (args is { Length: > 0 })
-{
-    _ = builder.Configuration.AddCommandLine(args);
-}
 
 // Register services
 builder.Services.AddLogging(logging =>

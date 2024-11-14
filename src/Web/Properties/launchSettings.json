@@ -8,10 +8,11 @@
       "applicationUrl": "http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
+        "SFS_PORT": "5000",
+        "SFS_DEBUG": "false",
         "SFS_ALLOW_INDEX": "true",
-        "SFS_SHOW_LISTING": "false",
-        "SFS_FALLBACK_TO_INDEX": "true",
-        "SFS_DEBUG": "false"
+        "SFS_SHOW_LISTING": "true",
+        "SFS_FALLBACK_TO_INDEX": "false"
       }
     }
   }
