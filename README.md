@@ -4,6 +4,11 @@
     <img src=".github/assets/sponsor.svg" width="150" />
 </a>
 
+## Credits
+Credits to [halverneus](https://github.com/halverneus/static-file-server). I've used his static file server for a while and was really happy with its ease of use.
+Unfortunately support for single-page applications was not great so I just had to create my own static file server.
+Many thanks to halverneus for creating his server that I could reuse some ideas from.
+
 ## Introduction
 
 Static file server that uses environment variables for configuration.
