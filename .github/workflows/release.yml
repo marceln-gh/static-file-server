@@ -1,0 +1,44 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - Dockerfile
+      - global.json
+      - static-file-server.sln
+      - .github/workflows/**
+      - src/**
+  workflow_dispatch:
+
+jobs:
+  build_and_test:
+    uses: ./.github/workflows/build-and-test.yml
+
+  determine_version:
+    runs-on: ubuntu-latest
+    outputs:
+      VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
+    steps:
+      - name: Determine version
+        id: version
+        shell: pwsh
+        run: |
+          "VERSION_TAG=$(get-date -format yyyyMMddHHmmss)" >> $env:GITHUB_OUTPUT
+
+      - name: Output version
+        env:
+          VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
+        run: echo "$VERSION_TAG"
+
+  build_and_publish_docker_images:
+    needs: [build_and_test, determine_version]
+    uses: ./.github/workflows/docker-publish.yml
+    with:
+      docker_file: Dockerfile
+      image_name: ${{ vars.IMAGE_NAME }}
+      version: ${{ needs.determine_version.outputs.VERSION_TAG }}
+      platforms: linux/arm64,linux/amd64
+    secrets:
+      docker_username: ${{ secrets.REPO_USERNAME }}
+      docker_password: ${{ secrets.REPO_PASSWORD }}

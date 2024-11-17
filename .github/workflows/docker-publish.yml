@@ -1,4 +1,4 @@
-name: Docker-Publish
+name: Docker build and publish
 
 on:
   workflow_call:
@@ -15,12 +15,17 @@ on:
         type: string
         description: The name of the docker image.
 
+      version:
+        required: true
+        type: string
+        description: The version of the docker image.
+
       # The context path of the project parameter.
       context:
         default: .
         type: string
         description: The context path of the project.
-      
+
       # The docker platforms parameter with default value is "linux/arm64 and linux/amd64"
       platforms:
         default: linux/arm64,linux/amd64
@@ -40,18 +45,6 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-
-      # Determine version
-      - name: Determine version
-        id: version
-        shell: pwsh
-        run: |
-          "VERSION_TAG=$(get-date -format yyyyMMddHHmmss)" >> $env:GITHUB_OUTPUT
-
-      - name: Output version
-        env:
-          VERSION_TAG: ${{ steps.version.outputs.VERSION_TAG }}
-        run: echo "$VERSION_TAG"
 
       # Setup Buildx
       - name: Docker Setup Buildx
@@ -85,5 +78,5 @@ jobs:
           file: ${{ inputs.docker_file }}
           platforms: ${{ inputs.platforms }}
           push: true
-          tags: ${{ inputs.image_name }}:latest,${{ inputs.image_name }}:${{ steps.version.outputs.VERSION_TAG }}
+          tags: ${{ inputs.image_name }}:latest,${{ inputs.image_name }}:${{ inputs.version }}
           cache-from: ${{ inputs.image_name }}:latest
