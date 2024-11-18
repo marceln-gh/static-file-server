@@ -26,10 +26,10 @@ builder.WebHost.ConfigureKestrel(options =>
 // Configure configuration
 builder.Configuration.AddInMemoryCollection(new Dictionary<string, string?>
 {
-    ["LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware"] = "Information",
-    ["Logging:Console:LogLevel:Microsoft.Hosting.Lifetime"] = "Information",
-    ["Logging:Console:LogLevel:Microsoft.AspNetCore.Hosting.Diagnostics"] = "None",
-    ["Logging:Console:LogLevel:Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware"] = "None"
+    ["LogLevel:Microsoft.AspNetCore.HttpLogging.HttpLoggingMiddleware"] = "Information", // Required by app.UseHttpLogging()
+    ["Logging:Console:LogLevel:Microsoft.Hosting.Lifetime"] = "Information", // Displays relevant configuration during startup (e.g. the port and content-root)
+    ["Logging:Console:LogLevel:Microsoft.AspNetCore.Hosting.Diagnostics"] = "None", // Disable default logging of request and response metadata
+    ["Logging:Console:LogLevel:Microsoft.AspNetCore.StaticFiles.StaticFileMiddleware"] = "None" // Disable default logging performed by StaticFileMiddleware
 });
 builder.Configuration.AddEnvironmentVariables(prefix: "ASPNETCORE_");
 builder.Configuration.AddEnvironmentVariables(prefix: "SFS_");

@@ -1,8 +1,5 @@
-# RUN WITH:
-# docker run --rm -it -p 5000:8080 -e SFS_ALLOW_INDEX=true -e SFS_SHOW_LISTING=true -e SFS_FALLBACK_TO_INDEX=false SFS_DEBUG=false marcelndev/static-file-server
-
 # Copy csproj and restore as distinct layers
-FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+FROM --platform=$BUILDPLATFORM mcr.microsoft.com/dotnet/sdk:9.0-alpine AS build
 ARG TARGETARG
 ARG BUILDPLATFORM
 
