@@ -1,6 +1,6 @@
 using System.Globalization;
 
-using MarcelN.StaticFileServer.Web;
+using MarcelN.StaticFileServer.Web.Middleware;
 
 using Microsoft.AspNetCore.HttpLogging;
 
@@ -48,7 +48,7 @@ builder.Services.AddHttpLogging(logging =>
     // Log a single entry containing the request, response and duration
     logging.CombineLogs = true;
 });
-builder.Services.AddSingleton<FallbackToIndexMiddleware>();
+builder.Services.AddFallbackToFile();
 builder.Services.AddDirectoryBrowser();
 
 // Configure middleware pipeline and start the server
@@ -61,7 +61,7 @@ if (app.Configuration.GetValue("DEBUG", false))
 
 if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
 {
-    _ = app.UseMiddleware<FallbackToIndexMiddleware>();
+    _ = app.UseFallbackToFile();
 }
 
 var fileServerOptions = new FileServerOptions
@@ -69,7 +69,7 @@ var fileServerOptions = new FileServerOptions
     EnableDefaultFiles = app.Configuration.GetValue("ALLOW_INDEX", true),
     EnableDirectoryBrowsing = app.Configuration.GetValue("SHOW_LISTING", true)
 };
-fileServerOptions.DefaultFilesOptions.DefaultFileNames = [FallbackToIndexMiddleware.FallbackFileName];
+fileServerOptions.DefaultFilesOptions.DefaultFileNames = ["index.html"];
 app.UseFileServer(fileServerOptions);
 
 app.Run();
