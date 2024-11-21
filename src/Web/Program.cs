@@ -44,7 +44,6 @@ builder.Services.AddHttpLogging(logging =>
 });
 builder.Services.AddFallbackToFile();
 builder.Services.AddDirectoryBrowser();
-builder.Services.AddRoutingCore();
 
 // Configure middleware pipeline and start the server
 var app = builder.Build();
@@ -63,10 +62,6 @@ var fileServerOptions = new FileServerOptions
 };
 fileServerOptions.DefaultFilesOptions.DefaultFileNames = ["index.html"];
 app.UseFileServer(fileServerOptions);
-
-// Add endpoints
-app.UseRouting();
-app.MapGet("/version", () => "20241120210534");
 
 // Add fallback handler when SFS_FALLBACK_TO_INDEX is enabled
 if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
