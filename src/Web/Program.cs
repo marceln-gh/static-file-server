@@ -3,6 +3,8 @@ using System.Globalization;
 using MarcelN.StaticFileServer.Web.Middleware;
 
 using Microsoft.AspNetCore.HttpLogging;
+using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.Options;
 
 static TValue GetEnvironmentVariableOrDefault<TValue>(string variableName, TValue defaultValue) where TValue : IParsable<TValue>
 {
@@ -50,6 +52,7 @@ builder.Services.AddHttpLogging(logging =>
 });
 builder.Services.AddFallbackToFile();
 builder.Services.AddDirectoryBrowser();
+builder.Services.AddRoutingCore();
 
 // Configure middleware pipeline and start the server
 var app = builder.Build();
@@ -59,10 +62,10 @@ if (app.Configuration.GetValue("DEBUG", false))
     _ = app.UseHttpLogging();
 }
 
-if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
-{
-    _ = app.UseFallbackToFile();
-}
+//if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
+//{
+//    _ = app.UseFallbackToFile();
+//}
 
 var fileServerOptions = new FileServerOptions
 {
@@ -71,5 +74,33 @@ var fileServerOptions = new FileServerOptions
 };
 fileServerOptions.DefaultFilesOptions.DefaultFileNames = ["index.html"];
 app.UseFileServer(fileServerOptions);
+
+app.UseRouting();
+
+// Register version endpoint
+app.MapGet("/version", () => "20241120210534");
+
+// Register fallback handler
+if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
+{
+    app.Run(async (HttpContext context) =>
+    {
+        // TODO: Move this code to a service (that looks like the current middleware)
+        var environment = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
+        var staticFileOptions = context.RequestServices.GetRequiredService<IOptions<StaticFileOptions>>().Value;
+        var contentTypeProvider = staticFileOptions.ContentTypeProvider ?? new FileExtensionContentTypeProvider();
+
+        if (!contentTypeProvider.TryGetContentType("index.html", out var contentType))
+        {
+            contentType = staticFileOptions.DefaultContentType;
+        }
+
+        var file = environment.WebRootFileProvider.GetFileInfo("index.html");
+        context.Response.ContentType = contentType;
+        context.Response.ContentLength = file.Length;
+
+        await context.Response.SendFileAsync(file).ConfigureAwait(continueOnCapturedContext: false);
+    });
+}
 
 app.Run();
