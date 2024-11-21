@@ -1,16 +1,8 @@
-using System.Globalization;
-
 using MarcelN.StaticFileServer.Web.Middleware;
 
 using Microsoft.AspNetCore.HttpLogging;
-using Microsoft.AspNetCore.StaticFiles;
-using Microsoft.Extensions.Options;
 
-static TValue GetEnvironmentVariableOrDefault<TValue>(string variableName, TValue defaultValue) where TValue : IParsable<TValue>
-{
-    var stringValue = Environment.GetEnvironmentVariable(variableName);
-    return TValue.TryParse(stringValue, CultureInfo.InvariantCulture, out var value) ? value : defaultValue;
-}
+using static MarcelN.StaticFileServer.Web.Environment;
 
 var portNumber = GetEnvironmentVariableOrDefault("SFS_PORT", 80);
 
@@ -57,16 +49,13 @@ builder.Services.AddRoutingCore();
 // Configure middleware pipeline and start the server
 var app = builder.Build();
 
+// Add logging when SFS_DEBUG is enabled
 if (app.Configuration.GetValue("DEBUG", false))
 {
     _ = app.UseHttpLogging();
 }
 
-//if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
-//{
-//    _ = app.UseFallbackToFile();
-//}
-
+// Add serving of static files
 var fileServerOptions = new FileServerOptions
 {
     EnableDefaultFiles = app.Configuration.GetValue("ALLOW_INDEX", true),
@@ -75,32 +64,14 @@ var fileServerOptions = new FileServerOptions
 fileServerOptions.DefaultFilesOptions.DefaultFileNames = ["index.html"];
 app.UseFileServer(fileServerOptions);
 
+// Add endpoints
 app.UseRouting();
-
-// Register version endpoint
 app.MapGet("/version", () => "20241120210534");
 
-// Register fallback handler
+// Add fallback handler when SFS_FALLBACK_TO_INDEX is enabled
 if (app.Configuration.GetValue("FALLBACK_TO_INDEX", false))
 {
-    app.Run(async (HttpContext context) =>
-    {
-        // TODO: Move this code to a service (that looks like the current middleware)
-        var environment = context.RequestServices.GetRequiredService<IWebHostEnvironment>();
-        var staticFileOptions = context.RequestServices.GetRequiredService<IOptions<StaticFileOptions>>().Value;
-        var contentTypeProvider = staticFileOptions.ContentTypeProvider ?? new FileExtensionContentTypeProvider();
-
-        if (!contentTypeProvider.TryGetContentType("index.html", out var contentType))
-        {
-            contentType = staticFileOptions.DefaultContentType;
-        }
-
-        var file = environment.WebRootFileProvider.GetFileInfo("index.html");
-        context.Response.ContentType = contentType;
-        context.Response.ContentLength = file.Length;
-
-        await context.Response.SendFileAsync(file).ConfigureAwait(continueOnCapturedContext: false);
-    });
+    _ = app.UseFallbackToFile();
 }
 
 app.Run();

@@ -25,6 +25,7 @@ insert_final_newline = false
 [*.{cs,vb}]
 ## CUSTOM ##
 csharp_style_namespace_declarations = file_scoped
+csharp_style_prefer_primary_constructors = false
 
 # Organize usings
 dotnet_separate_import_directive_groups = true

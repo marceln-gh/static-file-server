@@ -19,10 +19,20 @@ internal static class FallbackToFileExtensions
             .Configure(configureOptions);
     }
 
+    /// <summary>
+    /// Adds a terminal middleware that runs if no endpoint handles the request.
+    /// This middleware will fallback to a configured file.
+    /// </summary>
     public static IApplicationBuilder UseFallbackToFile(this IApplicationBuilder app)
     {
         ArgumentNullException.ThrowIfNull(app);
 
-        return app.UseMiddleware<FallbackToFileMiddleware>();
+        app.Run(async (HttpContext context) =>
+        {
+            var middleware = context.RequestServices.GetRequiredService<FallbackToFileTerminalMiddleware>();
+            await middleware.InvokeAsync(context).ConfigureAwait(continueOnCapturedContext: false);
+        });
+
+        return app;
     }
 }
