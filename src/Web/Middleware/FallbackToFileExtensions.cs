@@ -6,7 +6,7 @@ internal static class FallbackToFileExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        return services.AddSingleton<FallbackToFileMiddleware>();
+        return services.AddSingleton<FallbackToFileTerminalMiddleware>();
     }
 
     public static IServiceCollection AddFallbackToFile(this IServiceCollection services, Action<FallbackToFileOptions> configureOptions)
